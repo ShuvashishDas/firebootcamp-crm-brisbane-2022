@@ -1,0 +1,27 @@
+<form [formGroup]="formGroup">
+  <fbc-text name="name" label="Name" formControlName="name"></fbc-text>
+  <div class="form-group">
+    <label for="checkPhone">Add a phone number</label>
+    <input type="checkbox" name="checkPhone" formControlName="checkPhone" />
+  </div>
+  <div *ngIf="formGroup.get('phone').hasError('required')">
+    Phone number is required
+  </div>
+  <fbc-text
+    name="phone"
+    label="Phone number"
+    formControlName="phone"
+  ></fbc-text>
+  <fbc-text name="email" label="Email" formControlName="email"></fbc-text>
+  <div class="form-group">
+    <button
+      class="btn btn-primary btn-sm"
+      [disabled]="!formGroup.valid"
+      (click)="saveCompany()"
+    >
+      Save
+    </button>
+  </div>
+  <br /><br />
+  <pre>{{ formGroup.value | json }}</pre>
+</form>

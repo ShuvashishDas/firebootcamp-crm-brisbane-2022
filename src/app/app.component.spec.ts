@@ -1,35 +1,63 @@
-import { TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
+import { APP_BASE_HREF } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
+import { DebugElement } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ReactiveFormsModule } from '@angular/forms';
+import { By } from '@angular/platform-browser';
+import { of } from 'rxjs';
+import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { Company } from './model/company';
+import { CompanyEditComponent } from './company/company-edit/company-edit.component';
+import { CompanyListComponent } from './company/company-list/company-list.component';
+import { CompanyTableComponent } from './company/company-table/company-table.component';
+import { CompanyService } from './service/company.service';
+import { TextComponent } from './controls/text/text.component';
 
-describe('AppComponent', () => {
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule
-      ],
+describe(`Component: App Component`, () => {
+  let companyService: CompanyService;
+  let fixture: ComponentFixture<AppComponent>;
+  let component: AppComponent;
+  let debugElement: DebugElement;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       declarations: [
-        AppComponent
+        AppComponent,
+        CompanyListComponent,
+        CompanyTableComponent,
+        CompanyEditComponent,
+        TextComponent,
       ],
-    }).compileComponents();
+      imports: [AppRoutingModule, HttpClientModule, ReactiveFormsModule],
+      providers: [{ provide: APP_BASE_HREF, useValue: '/' }],
+    });
+
+    fixture = TestBed.createComponent(AppComponent);
+    debugElement = fixture.debugElement;
+    component = fixture.componentInstance;
+    companyService = TestBed.inject(CompanyService);
   });
 
-  it('should create the app', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
+  it('add 1+1 - Pass', () => {
+    expect(1 + 1).toEqual(2);
   });
 
-  it(`should have as title 'firebootcamp-crm-brisbane-2022'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('firebootcamp-crm-brisbane-2022');
+  it('title Check - PASS', () => {
+    expect('Brissy is awesome').toEqual(component.title);
   });
 
-  it('should render title', () => {
-    const fixture = TestBed.createComponent(AppComponent);
+  it('Test Company Count - Pass', () => {
+    spyOn(companyService, 'getCompanies').and.returnValue(
+      of([<Company>{}, <Company>{}])
+    );
     fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.content span')?.textContent).toContain('firebootcamp-crm-brisbane-2022 app is running!');
+    let countElement = debugElement.query(
+      By.css('#company-count')
+    ).nativeElement;
+    expect(countElement.textContent).toEqual('2');
   });
+
+  // it('company can change when observable updates', () => {
+  // })
 });
